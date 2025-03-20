@@ -58,6 +58,6 @@ For this reason I cannot say this is an original idea and the code might be simi
 
 Note #2. The name of the program is pronounced like Jeffrey.
 
-Note #3. It stands for "Just Effing run it."
+Note #3. It stands for "Just F-ing Run It."
 
 :q!
