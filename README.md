@@ -21,7 +21,7 @@ Scripts can be configured in ~/.config/jfri/jfri.conf lets the user select one, 
 ## Installation
 1. Clone this repository:
    ```bash
-   git clone https://github.com/PalmieriClaudio/jfri.git
+   git clone https://github.com/PalmieriClaudio/JFRI.git
    cd jfri
    ```
 2. (Optional) Build the program:
