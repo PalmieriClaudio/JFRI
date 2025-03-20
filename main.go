@@ -10,20 +10,28 @@ import (
 	"strings"
 )
 
+const (
+	reset  = "\033[0m"
+	red    = "\033[31m"
+	green  = "\033[32m"
+	yellow = "\033[33m"
+	cyan   = "\033[36m"
+)
+
 func main() {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println("Home directory could not be retrieved. Exiting")
+		fmt.Println(red + "Home directory could not be retrieved. Exiting" + reset)
 		return
 	}
 	path := filepath.Join(home, ".config", "jfri", "jfri.conf")
 
 	if _, err = os.Stat(path); os.IsNotExist(err) {
-		fmt.Println("Config file does not exist. Creating...")
+		fmt.Println(cyan + "Config file does not exist. Creating..." + reset)
 		os.MkdirAll(filepath.Dir(path), 0o755)
 		file, e := os.Create(path)
 		if e != nil {
-			fmt.Println("Error creating config file:", e)
+			fmt.Println(red+"Error creating config file:"+reset, e)
 			return
 		}
 		file.Close()
@@ -58,31 +66,36 @@ func main() {
 
 	if err = scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
+		return
 	}
-
+	fmt.Println(yellow + "     ====================================" + reset)
+	fmt.Println(yellow + "     =               JFRI               =" + reset)
+	fmt.Println(yellow + "     ====================================" + reset)
+	fmt.Println()
 	// if len(extracted) == 0 {
 	// 	fmt.Println("No valid entries found. Make sure the paths are in the format 'run /path/to/file'")
 	// 	return
 	// }
 
-	fmt.Println("Select an option:")
-	fmt.Println("[0] Open/Edit jfri configuration file")
+	fmt.Println(green + "Select an option:" + reset)
+	fmt.Println()
+	fmt.Println("[0] Edit jfri configuration file")
 	for i, name := range displayNames {
 		fmt.Printf("[%d] %s\n", i+1, name)
 	}
 
-	fmt.Print("Enter the index of the option: ")
+	fmt.Print(yellow + "Enter the index of the option you wish to start: " + reset)
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Println("Invalid input, exiting.")
+		fmt.Println(red + "Invalid input, exiting." + reset)
 		return
 	}
 	input = strings.TrimSpace(input)
 
 	index, err := strconv.Atoi(input)
 	if err != nil || index < 0 || index > len(extracted) {
-		fmt.Println("Invalid selection.")
+		fmt.Println(red + "Invalid selection." + reset)
 		return
 	}
 
@@ -100,18 +113,18 @@ func main() {
 				}
 			}
 		}
-		fmt.Println("No suitable editor found.")
+		fmt.Println(red + "No suitable editor found." + reset)
 		return
 	}
 
 	selectedFile := extracted[index-1]
-	fmt.Println("Running:", selectedFile)
+	fmt.Println(yellow+"Running:"+reset, selectedFile)
 
 	cmd := exec.Command("sh", "-c", selectedFile) // Run as a shell command
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
-		fmt.Println("Error running command:", err)
+		fmt.Println(red+"Error running command:"+reset, err)
 	}
 }
