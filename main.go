@@ -6,8 +6,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
+
+	"github.com/manifoldco/promptui"
 )
 
 const (
@@ -45,7 +46,7 @@ func main() {
 	defer file.Close()
 
 	var extracted []string
-	var displayNames []string
+	displayNames := []string{"Edit jfri configuration file"}
 	var currentName string
 
 	scanner := bufio.NewScanner(file)
@@ -63,6 +64,7 @@ func main() {
 			currentName = ""
 		}
 	}
+	displayNames = append(displayNames, "Exit")
 
 	if err = scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
@@ -77,54 +79,44 @@ func main() {
 	// 	return
 	// }
 
-	fmt.Println(green + "Select an option:" + reset)
-	fmt.Println()
-	fmt.Println("[0] Edit jfri configuration file")
-	for i, name := range displayNames {
-		fmt.Printf("[%d] %s\n", i+1, name)
+	prompt := promptui.Select{
+		Label: "Select an option:",
+		Items: displayNames,
 	}
 
-	fmt.Print(yellow + "Enter the index of the option you wish to start: " + reset)
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println(red + "Invalid input, exiting." + reset)
-		return
-	}
-	input = strings.TrimSpace(input)
+mainLoop:
+	for {
+		index, _, _ := prompt.Run()
 
-	index, err := strconv.Atoi(input)
-	if err != nil || index < 0 || index > len(extracted) {
-		fmt.Println(red + "Invalid selection." + reset)
-		return
-	}
-
-	if index == 0 {
-		editors := []string{"nvim", "nano"}
-		for _, editor := range editors {
-			cmd := exec.Command("which", editor)
-			if err = cmd.Run(); err == nil {
-				cmd = exec.Command(editor, path)
-				cmd.Stdin = os.Stdin
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
+		if index == 0 {
+			editors := []string{"nvim", "nano"}
+			for _, editor := range editors {
+				cmd := exec.Command("which", editor)
 				if err = cmd.Run(); err == nil {
-					return
+					cmd = exec.Command(editor, path)
+					cmd.Stdin = os.Stdin
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+					if err = cmd.Run(); err == nil {
+						return
+					}
 				}
 			}
+			fmt.Println(red + "No suitable editor found." + reset)
+			return
+		} else if index == len(displayNames)-1 {
+			break mainLoop
 		}
-		fmt.Println(red + "No suitable editor found." + reset)
-		return
-	}
 
-	selectedFile := extracted[index-1]
-	fmt.Println(yellow+"Running:"+reset, selectedFile)
+		selectedFile := extracted[index-1]
+		fmt.Println(yellow+"Running:"+reset, selectedFile)
 
-	cmd := exec.Command("sh", "-c", selectedFile) // Run as a shell command
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	if err != nil {
-		fmt.Println(red+"Error running command:"+reset, err)
+		cmd := exec.Command("sh", "-c", selectedFile) // Run as a shell command
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println(red+"Error running command:"+reset, err)
+		}
 	}
 }
