@@ -53,7 +53,8 @@ If you prefer not to build the program, the linux executable comes already built
    Only inline commands are supported currently. This is because the script was made for my convenience and I didn't have a need yet for multi-line scripts.
    If you have a need to run multi-line scripts, this is something that could wasily be setup in the source, otherwhise a .sh containining the multi-line command should serve the purpose of running the command.
 
-Note, this program is by no means complex, I built it for personal use, independent of similar tools possibly being available, and while it's for my convenience, I thought others could find it useful. 
+Note, this tool was created for personal convenience, without researching similar existing solutions. It was a small utility project to practice Go and automate a part of my workflow.
+While simple, I thought other might find it useful, so I'm sharing it here. 
 
 Note #2. The name of the program is pronounced like Jeffrey.
 
