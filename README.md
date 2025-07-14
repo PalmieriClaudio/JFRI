@@ -16,7 +16,7 @@
 ```
 
 A simple Go program that runs scripts scattered around the file system.
-Scripts can be configured in ~/.config/jfri/jfri.conf lets the user select one, ensures it's executable, and then runs it.
+Scripts can be configured in ~/.config/jfri/jfri.conf allowing the user to select one. JFRI ensures it's executable, and then runs it.
 
 ## Installation
 1. Clone this repository:
@@ -32,7 +32,7 @@ Scripts can be configured in ~/.config/jfri/jfri.conf lets the user select one, 
    ```bash
    mv jfri /usr/local/bin/
    ```
-If you don't want to build the program, the linux executable comes already built in the repository
+If you prefer not to build the program, the linux executable comes already built in the repository
 
 ## Usage
    (Optional) Create the jfri.conf file in the ~/.config/jfri/ directory, add entries in the format:
@@ -49,12 +49,11 @@ If you don't want to build the program, the linux executable comes already built
    If the run line contains a script in the format "run /path/to/file/script.sh" the name will be the script name by default (script in this example).
    The name of scripts can still be overwritten with a "name" tag
 
-   Scripts that are not executable will be converted to executable automatically before being ran.
+   Scripts that are not executable will be made executable automatically before being run.
    Only inline commands are supported currently. This is because the script was made for my convenience and I didn't have a need yet for multi-line scripts.
    If you have a need to run multi-line scripts, this is something that could wasily be setup in the source, otherwhise a .sh containining the multi-line command should serve the purpose of running the command.
 
-Note, this program is by no means complex and I didn't do any research on if any similar scripts were out there. It was intended as a convenience for me and a way to practice go.
-For this reason I cannot say this is an original idea and the code might be similar to other projects. I don't know and I don't care, this is for my amusement and my use, and now it's here if someone else wants it.
+Note, this program is by no means complex, I built it for personal use, independent of similar tools possibly being available, and while it's for my convenience, I thought others could find it useful. 
 
 Note #2. The name of the program is pronounced like Jeffrey.
 
